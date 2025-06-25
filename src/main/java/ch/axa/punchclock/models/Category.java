@@ -3,8 +3,6 @@ package ch.axa.punchclock.models;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,45 +10,42 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "Category")
+@Table(name = "category")
 public class Category {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "category_id")
     private long id;
 
-    @Column(length = 255)
-    @NotBlank(message = "Darf nicht leer sein!")
+    @Column(nullable = false)
     private String name;
 
     @OneToMany(mappedBy = "category")
-    @JsonIgnore
     private Set<Entry> entries = new HashSet<>();
 
-     public long getId() {
-         return id;
-     }
+    public long getId() {
+        return id;
+    }
 
-     public void setId(long id) {
-         this.id = id;
-     }
+    public void setId(long id) {
+        this.id = id;
+    }
 
-     public String getName() {
-         return name;
-     }
+    public String getName() {
+        return name;
+    }
 
-     public void setName(String name) {
-         this.name = name;
-     }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-     public Set<Entry> getEntries() {
-         return entries;
-     }
+    public Set<Entry> getEntries() {
+        return entries;
+    }
 
-     public void setEntries(Set<Entry> entries) {
-         this.entries = entries;
-     }
-
+    public void setEntries(Set<Entry> entries) {
+        this.entries = entries;
+    }
 }

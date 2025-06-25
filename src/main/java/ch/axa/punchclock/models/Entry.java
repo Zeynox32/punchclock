@@ -13,45 +13,48 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "Entry")
+@Table(name = "entry")
 public class Entry {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "entry_id")
+    private Long id;
 
-    @Column(name = "check_in", nullable = false)
+    @NotNull(message = "Bitte gib den Startzeitpunkt bekannt!")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @NotNull(message = "Darf nicht Null sein!")
+    @Column(name = "check_in", nullable = false)
     private LocalDateTime checkIn;
 
     @Column
-    @Min(1800)
     private int duration;
 
-    @Column(length = 5000)
     @NotBlank(message = "Darf nicht leer sein!")
+    @Column(length = 5000)
     private String description;
 
-    @ManyToOne
-    private Category category;
-
-    @ManyToMany(mappedBy = "entries")
-    @JsonIgnoreProperties("entries")
+    @ManyToMany
+    @JoinTable(name = "entry_tags", joinColumns = @JoinColumn(name = "entry_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    @JsonIgnoreProperties(value = "entries")
     private Set<Tag> tags = new HashSet<>();
 
-    public long getId() {
+    @ManyToOne
+    @JsonIgnoreProperties(value = "entries")
+    private Category category;
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -79,14 +82,6 @@ public class Entry {
         this.description = description;
     }
 
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
     public Set<Tag> getTags() {
         return tags;
     }
@@ -95,4 +90,13 @@ public class Entry {
         this.tags = tags;
     }
 
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    
 }
