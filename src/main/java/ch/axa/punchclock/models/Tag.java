@@ -20,7 +20,7 @@ public class Tag {
     @Column(name = "tag_id")
     private long id;
 
-    private String name;
+    private String title;
 
     @ManyToMany(mappedBy = "tags")
     private Set<Entry> entries = new HashSet<>();
@@ -33,12 +33,12 @@ public class Tag {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public Set<Entry> getEntries() {
