@@ -13,7 +13,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tag")
-public class Tag {
+public class Tags {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

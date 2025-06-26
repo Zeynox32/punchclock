@@ -13,47 +13,63 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import ch.axa.punchclock.models.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+import ch.axa.punchclock.models.Tags;
 import ch.axa.punchclock.repositories.TagRepository;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/tags")
+@Tag(name = "Tag", description = "Verwaltet Tags")
 public class APITagController {
 
   @Autowired
-  private TagRepository entryRepository;
+  private TagRepository tagRepository;
 
+  @Operation(summary = "Erstellt einen neuen Tag")
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public Tag create(@RequestBody @Valid Tag entry) {
-    return entryRepository.save(entry);
+  public Tags create(@RequestBody @Valid Tags tag) {
+    return tagRepository.save(tag);
   }
 
+  @Operation(summary = "Listet alle Tags auf")
   @GetMapping
-  public Iterable<Tag> index() {
-    return entryRepository.findAll();
+  public Iterable<Tags> index() {
+    return tagRepository.findAll();
   }
 
+  @Operation(summary = "Gibt einen bestimmten Tag anhand der ID zurück")
   @GetMapping("/{id}")
-  public ResponseEntity<Tag> read(@PathVariable long id) {
-    return ResponseEntity.of(entryRepository.findById(id));
+  public ResponseEntity<Tags> read(
+    @Parameter(description = "ID des Tags", required = true)
+    @PathVariable long id) {
+    return ResponseEntity.of(tagRepository.findById(id));
   }
 
+  @Operation(summary = "Aktualisiert einen bestehenden Tag")
   @PutMapping("/{id}")
-  public Tag update(@PathVariable long id, @RequestBody @Valid Tag entry) {
-    entry.setId(id);
-    return entryRepository.save(entry);
+  public Tags update(
+    @Parameter(description = "ID des Tags", required = true)
+    @PathVariable long id,
+    @RequestBody @Valid Tags tag) {
+    tag.setId(id);
+    return tagRepository.save(tag);
   }
 
+  @Operation(summary = "Löscht einen Tag anhand der ID")
   @DeleteMapping("/{id}")
-  public ResponseEntity<Tag> delete(@PathVariable long id) {
-    var entry = entryRepository.findById(id);
+  public ResponseEntity<Tags> delete(
+    @Parameter(description = "ID des zu löschenden Tags", required = true)
+    @PathVariable long id) {
+    var entry = tagRepository.findById(id);
     if(entry.isPresent()) {
-      entryRepository.delete(entry.get());
+      tagRepository.delete(entry.get());
       return new ResponseEntity<>(HttpStatus.OK);
     }
-
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 }

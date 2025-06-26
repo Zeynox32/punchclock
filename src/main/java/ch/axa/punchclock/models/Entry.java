@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -18,12 +17,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "entry")
+@NamedQuery(query = "SELECT e FROM Entry e WHERE e.category.id = :categoryId", name = "Entry.findByCategory")
 public class Entry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,7 +46,7 @@ public class Entry {
     @ManyToMany
     @JoinTable(name = "entry_tags", joinColumns = @JoinColumn(name = "entry_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
     @JsonIgnoreProperties(value = "entries")
-    private Set<Tag> tags = new HashSet<>();
+    private Set<Tags> tags = new HashSet<>();
 
     @ManyToOne
     @JsonIgnoreProperties(value = "entries")
@@ -83,11 +84,11 @@ public class Entry {
         this.description = description;
     }
 
-    public Set<Tag> getTags() {
+    public Set<Tags> getTags() {
         return tags;
     }
 
-    public void setTags(Set<Tag> tags) {
+    public void setTags(Set<Tags> tags) {
         this.tags = tags;
     }
 
